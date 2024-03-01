@@ -1,0 +1,811 @@
+import java.util.Scanner;
+
+public class Main {
+   static Scanner scnr = new Scanner(System.in);
+   
+   // can make cloth with string if you meet the spider
+   static boolean hasString = false;
+   
+   // materials for dress
+   static boolean hasCloth = false;
+   static boolean hasButton = false;
+   static boolean hasThimble = false;
+   
+   // materials for soup
+   static boolean hasApple = false;
+   static boolean hasCarrot = false;
+   static boolean hasOnion = false;
+   
+   // materials for tea
+   static boolean hasAcorn = false;
+   static boolean hasFlower = false;
+   static boolean hasHoney = false;
+   
+   // number of times travelled
+   static int totalChoices = 0;
+   
+   // dummy string for passing through "screens"
+   static String temp = "";
+   
+   /* 
+   The goal of the game is to enjoy a walk in the woods.
+   As you walk, you pick up little bits and bobs. 
+   At the end of the game, you may be able to craft some of your findings into a gift for your friend.
+   
+   Cloth, button, string and thimble make a Cute Dress.
+      - If you do not have the thimble, you can still make the dress, but you'll receive a note
+      that an extra something might have made your thumbs hurt less.
+      - If you do not have the button, you can still make the dress, but you'll receive a note 
+      that an extra something might have added some fine detail.
+      
+   Apple, carrot, and onion make a Yummy Soup.
+      -If you are missing one of the ingredients, you can still make a soup, but you'll receive
+      a note that an extra ingredient would have made the soup sing.
+      
+   FLower, Honey, and Acorn (or Thimble) make Cup of Tea.
+      -You may gather either the acorn or the thimble to use for the cup.
+      -If you are missing honey, you can still make tea, but you'll receive a note that an
+      extra something could have made the tea a little sweeter. 
+      
+   */
+   
+   public static void main(String[] args) {
+      Scanner scnr = new Scanner(System.in);
+      
+      String nextChoice = "";
+      int i = 0;
+      
+      // Opening scene
+      System.out.println("It's a lovely day for a...\n");
+      
+      System.out.println(" __    __      _ _      _         _   _            __    __                _");
+      System.out.println("/ / /\\ \\ \\__ _| | | __ (_)_ __   | |_| |__   ___  / / /\\ \\ \\___   ___   __| |___ ");
+      System.out.println("\\ \\/  \\/ / _` | | |/ / | | '_ \\  | __| '_ \\ / _ \\ \\ \\/  \\/ / _ \\ / _ \\ / _` / __|");
+      System.out.println(" \\  /\\  / (_| | |   <  | | | | | | |_| | | |  __/  \\  /\\  / (_) | (_) | (_| \\__ \\");
+      System.out.println("  \\/  \\/ \\__,_|_|_|\\_\\ |_|_| |_|  \\__|_| |_|\\___|   \\/  \\/ \\___/ \\___/ \\__,_|___/");
+      System.out.println();
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      makeBox("Let's go!");
+      System.out.println();
+      
+      System.out.print("You pick up your sturdy bag, one you made yourself, just for such outings. ");
+      System.out.println("It will be perfect for storing any trinkets you may find as you walk.\n");
+      
+      System.out.print("Your best friend's birthday is coming up, perhaps you can find something ");
+      System.out.println("nice for them on your little adventure today!\n");
+      System.out.print("Stepping outside, the air is crisp and cool. It feels nice on your arms, ");
+      System.out.println("so no need for a sweater.");
+      
+      // Prompt for choice: Big Tree or Stream?
+      System.out.println();
+      System.out.println("Would you like to walk towards the Big Tree, or the Stream?");
+      nextChoice = scnr.nextLine();
+      System.out.println();
+      
+      nextChoice = makeChoice("big tree", "stream", nextChoice);
+      
+      // Go on adventure      
+      
+      for (i = 0; i < 6; ++i) {
+         totalChoices += 1;
+         if ((nextChoice.equals("big tree")) == true) {
+            nextChoice = goToBigTree();
+         } else if ((nextChoice.equals("stream")) == true) {
+            nextChoice = goToStream();
+         } else if ((nextChoice.equals("mouse hole")) == true) {
+            nextChoice = lookInMouseHole();
+         } else if ((nextChoice.equals("spider")) == true) {
+            nextChoice = lookAtSpider();
+         } else if ((nextChoice.equals("path")) == true) {
+            nextChoice = followPath();
+         } else if ((nextChoice.equals("garden")) == true) {
+            nextChoice = visitGarden();
+         } else if ((nextChoice.equals("bunny")) == true) {
+            nextChoice = helpBunny();
+         } else if ((nextChoice.equals("bees")) == true) {
+            nextChoice = lookAtBeeHive();
+         } 
+      }
+      System.out.println("\nYour bag feels heavy with bits and bobs.");
+      
+      // Determine what gifts you can make
+      System.out.println("What gifts can you make for your friend?\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      boolean noDress = false;
+      boolean noSoup = false;
+      boolean noTea = false;
+      
+      // Cute Dress
+      if ((hasString == true) && (hasCloth == true)) {
+         System.out.println("You have string and cloth. You can make a lovely dress!");
+         if (hasButton == true) {
+            System.out.println("The button you collected will make a fine addition. How cute!");
+         } else {
+            System.out.print("Your work is very fine, but next time you might look for ");
+            System.out.println("something to add a cute detail.");
+         }
+         if (hasThimble == true) {
+            System.out.println("The thimble made making the dress go so smoothly!");
+         } else {
+            System.out.print("Your thumb feels a bit sore from pushing the needle through, ");
+            System.out.println("maybe something extra would have helped.");
+         }
+         System.out.println();
+         System.out.println("**(Type anything and hit enter to continue)**");
+         System.out.flush();
+         temp = scnr.nextLine();
+         System.out.println();
+      } else {
+         noDress = true;
+      }
+      
+      
+      // Yummy Soup
+      
+      if (((hasApple == true) && (hasOnion == true)) || ((hasOnion == true) && (hasCarrot == true)) ||
+      ((hasCarrot == true) && (hasApple == true))) {
+         System.out.println("You have the ingredients for a soup!");
+         if (hasCarrot == true) {
+            System.out.println("The carrot is an excellent base for the soup, and purees nicely.");
+         }
+         if (hasOnion == true) {
+            System.out.println("The onion adds a marvelous flavor to your soup.");
+         }
+         if (hasApple == true) {
+            System.out.println("The apple provides an unexpected but welcome sweetness.");
+         }
+         if ((hasApple == true) && (hasCarrot == true) && (hasOnion == true)) {
+            System.out.println("What a flavorful, yummy soup you've made today!");
+         } else {
+            System.out.print("Your soup is delicious, but perhaps an extra ingredient would have really ");
+            System.out.println("made it sing!");
+         }
+         System.out.println();
+         System.out.println("**(Type anything and hit enter to continue)**");
+         System.out.flush();
+         temp = scnr.nextLine();
+         System.out.println();
+      } else {
+         noSoup = true;
+      }
+      
+      
+      // Cup of Tea
+      
+      if (((hasFlower == true) && (hasAcorn == true)) || ((hasFlower == true) && (hasThimble == true))) {
+         System.out.println("The flower you picked by the stream has petals that brew into a delicious tea!");
+         if (hasAcorn == true) {
+            System.out.println("The acorn you found in the garden is just big enough to fill with a fresh cup.");
+         } else {
+            System.out.println("The thimble you picked up will make a fine teacup.");
+         }
+         if (hasHoney == true) {
+            System.out.println("You add some of the honey from the bees to sweeten it up. Delicious!");
+         } else {
+            System.out.println("The tea is pleasant, but a touch of sweetness could make it even better!");
+         }
+         System.out.println();
+         System.out.println("**(Type anything and hit enter to continue)**");
+         System.out.flush();
+         temp = scnr.nextLine();
+         System.out.println();
+      } else {
+         noTea = true;
+      }
+      
+      // Nothing to use for gifts
+      if ((noDress == true) && (noSoup == true) && (noTea == true)) {
+         System.out.print("You have found many lovely things on your adventure! While you can't think ");
+         System.out.print(" of anything to make with your trinkets, you're sure your friend will ");
+         System.out.println("love receiving them, and appreciate the thought you put into their birthday.\n");
+         System.out.println("It's been quite an enjoyable Walk in the Woods!\n");
+      } else {
+         System.out.print("Your friend is sure to love their wonderful gifts! And you have had very a ");
+         System.out.println("lovely day as well. \n");
+         System.out.println("It's been quite an enjoyable Walk in the Woods!\n");
+      }
+      
+      
+      // Credits
+      //System.out.println("-+- Art Credits -+-");
+      //System.out.println("Big Tree: Sam Blumenstein");
+            
+   }
+   
+   // Method for displaying inventory
+   public static void printInventory() {
+      String inventory = "";
+      
+      if (hasApple == true) {
+         inventory += "an apple, ";
+      }
+      if (hasFlower == true) {
+         inventory += "a flower, ";
+      }
+      if (hasHoney == true) {
+         inventory += "some honey, ";
+      }
+      if (hasString == true) {
+         inventory += "some string, ";
+      }
+      if (hasCloth == true) {
+         inventory += "some cloth, ";
+      }
+      if (hasButton == true) {
+         inventory += "a button, ";
+      }
+      if (hasThimble == true) {
+         inventory += "a thimble, ";
+      }
+      if (hasCarrot == true) {
+         inventory += "a carrot, ";
+      }
+      if (hasOnion == true) {
+         inventory += "an onion, ";
+      }
+      if (hasAcorn == true) {
+         inventory += "an acorn, ";
+      }
+      
+      inventory = "In your bag: " + inventory.substring(0, (inventory.length() - 2)) + ".";
+      makeBox(inventory);
+   }
+   
+   // Method for making cool text boxes
+   public static void makeBox(String text) {
+      int i = 0;
+      String topAndBottom = "";
+      
+      for (i = 0; i < text.length(); ++i) {
+         topAndBottom += "-";
+      }
+      topAndBottom = "*-" + topAndBottom + "-*";
+      
+      System.out.println(topAndBottom);
+      System.out.println("| " + text + " |");
+      System.out.println(topAndBottom);
+   }
+   
+   // Method for comparing strings to make in-game decisions
+   public static String makeChoice(String optOne, String optTwo, String userInput) {
+      String choice = userInput;
+      choice = choice.toLowerCase();
+      String finalChoice = "";
+      
+      while (((choice.equals(optOne)) != true) && ((choice.equals(optTwo)) != true)) {
+         System.out.println("Try making a different choice.");
+         System.out.flush();
+         choice = scnr.nextLine();
+         choice = choice.toLowerCase();  
+      }
+      
+      if ((choice.equals(optOne)) == true) {
+         finalChoice = optOne;
+      } else if ((choice.equals(optTwo)) == true) {
+         finalChoice = optTwo;
+      }
+      
+      return finalChoice;
+   }
+   
+   // Big Tree: Pick an Apple from the tree
+   // Option to visit Mouse Hole or Bees
+   public static String goToBigTree() {
+      String choice = "";
+      
+      makeBox("Big Tree");
+      System.out.println();
+      
+      System.out.println("You have always loved visiting the big tree right by the edge of the woods.\n");
+      
+      System.out.print("It looks as if it has been growing for years, its trunk too wide for you to wrap ");
+      System.out.println("your arms around, and branches spreading into the sky forever.\n");
+      
+      System.out.print("There are some juicy apples growing on the branches today. You can just reach ");
+      System.out.println("one hanging from a lower branch.\n");
+      
+      System.out.println("You pick it and put it in your bag.\n");
+            
+      hasApple = true;
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         System.out.print("Off to the right, you see a little hole in the ground just big enough for a mouse. ");
+         System.out.println("Looking closely, you think you see some whiskers poking out.\n");
+      
+         System.out.println("You also notice some bees buzzing around a hive on the other side of the tree.\n");
+      
+         System.out.println("Would you like to visit the Mouse Hole, or the Bees?");
+         choice = scnr.nextLine();
+         System.out.println();
+      
+         choice = makeChoice("mouse hole", "bees", choice);
+      }
+      
+      return choice;   
+   }
+   
+   // Stream: Find fragrant Flowers 
+   // Option to visit Path or Bunny
+   public static String goToStream() {
+      String choice = "";
+      
+      // Stream story text goes here
+      makeBox("The Stream");
+      System.out.println();
+      
+      System.out.print("The stream bubbles softly. You have always found its rhythm calming. You have a ");
+      System.out.println("seat on the soft grass next to the water.\n");
+      
+      System.out.print("There are several fragrant flowers waving gently in the breeze. You pick one and ");
+      System.out.println("add it to your bag.\n");
+      
+      hasFlower = true;
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up text for Path or Bunny goes here
+         System.out.println("Off to the side, you notice a well-worn path leading further into the woods.\n");
+         
+         System.out.println("You also see a bunny hopping off with something in its mouth.\n");
+         
+         System.out.println("Do you follow the Path or the Bunny?");
+
+         choice = scnr.nextLine();
+         System.out.println();
+         
+         choice = makeChoice("path", "bunny", choice);
+      }
+      
+      return choice;
+   }
+   
+   // Spider: Visit spider in tree, turns your String into Cloth
+   // Option to visit Stream or Bees
+   public static String lookAtSpider() {
+      String choice = "";
+      
+      //Spider story text goes here
+      makeBox("The Spider");
+      System.out.println();
+      
+      System.out.print("The spider looks busy weaving its web. You admire the skill, and wonder what ");
+      System.out.println("it must be like to have six extra hands to use while crafting.\n");
+      
+      System.out.println("You notice a sign hanging by the web: \"Mitchell M. Stevenson, Fine Clothier\"\n");
+      
+      System.out.println("\"Hello, Spider!\" You say.\n");
+      
+      System.out.println("The spider turns around, pleased to have visitors.\n");
+      
+      System.out.println("\"Ah, hello! How can I help you today?\"\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      System.out.println("\"Who's Mitchell M. Stevenson?\" You ask.\n");
+      
+      System.out.print("\"Why, I am! I make fine cloth for anyone who can bring me materials ");
+      System.out.println("to work with. Do you have anything for me?\"\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      if (hasString == true) {
+         System.out.println("You look around in your bag.\n");
+         
+         System.out.print("\"I do have some string I got from a little mouse,\" you say. ");
+         System.out.println("\"Will that work?\"\n");
+         
+         System.out.print("\"Of course it will!\" Mitchell seems delighted at the opportunity ");
+         System.out.println("to show off his skills.\n");
+         
+         System.out.print("In no time, he has woven you a beautiful piece of cloth. ");
+         System.out.println("And there's still some string left over!\n");
+         
+         System.out.println("You put the items in your bag and thank Mitchell.\n");
+         
+         System.out.println("\"Any time!\" he says, waving goodbye.\n");
+         
+         hasCloth = true;
+      } else {
+         System.out.println("You look around in your bag.\n");
+         
+         System.out.println("\"I don't know that I have anything for you, I'm sorry!\"\n");
+         
+         System.out.println("Mitchell waves a few legs in the air. \"Don't worry about it!\" He says.");
+         System.out.println("\"But if you happen to find something in your travels, feel free to come back!\"\n");
+         
+         System.out.println("\"Thank you,\" you say. \"I will!\"\n");
+      }
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up text for Stream or Bees goes here
+         System.out.print("Looking around for the next stop on your adventure, you see the calm stream ");
+         System.out.println("from earlier.\n");
+         
+         System.out.println("You also notice a hive of bees buzzing about in a nearby tree.\n");
+         
+         System.out.println("Do you wish to visit the Stream or the Bees?");
+         choice = scnr.nextLine();
+         System.out.println();
+         choice = makeChoice("stream", "bees", choice);
+      }
+         
+      return choice;
+   }
+   
+   // Path: Find a Button and Thimble on the path, may choose one
+   // Option to visit Garden or Mouse Hole
+   public static String followPath() {
+      String choice = "";
+      String inventoryChoice = "";
+      
+      //Path story text goes here
+      makeBox("The Path");
+      System.out.println();
+      
+      System.out.print("You decide to walk down the path and see where it leads. Any grass that may ");
+      System.out.println("have once been here has been stamped into dirt by years of people walking along.\n");
+      
+      System.out.print("You try to imagine what lives the people who walked this path before might ");
+      System.out.print("have lead. Were they going somewhere specific? Or were they enjoying a good ");
+      System.out.println("wander, like you?\n");
+      
+      System.out.print("You look down and notice one of the people before you dropped a few things. ");
+      System.out.print("There's a button and a thimble lying just to the side, near the grass. ");
+      System.out.println("Someone must have loved sewing, just like you.\n");
+      
+      //Option to add Button or Thimble to inventory
+      System.out.println("Do you take the Button or the Thimble?");
+      inventoryChoice = scnr.nextLine();
+      System.out.println();
+      inventoryChoice = makeChoice("button", "thimble", inventoryChoice);
+      if ((inventoryChoice.equals("button")) == true) {
+         hasButton = true;
+      } else {
+         hasThimble = true;
+      }
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up for Garden or Mouse Hole goes here
+         System.out.print("The path has led you to a small garden, it looks like it's tended to ");
+         System.out.println("occasionally by whoever happens upon it.\n");
+         
+         System.out.print("Off to the right, you see a little hole in the ground just big enough for a mouse. ");
+         System.out.println("Looking closely, you think you see some whiskers poking out.\n");
+         
+         System.out.println("Do you tend the Garden or investigate the Mouse Hole?");
+         System.out.flush();
+         choice = scnr.nextLine();
+         System.out.println();
+         choice = makeChoice("garden", "mouse hole", choice);
+      }
+      
+      return choice;
+   }
+   
+   // Mouse Hole: Get some String from a little mouse 
+   // Option to visit Spider or Bunny
+   public static String lookInMouseHole() {
+      String choice = "";
+      
+      // Mouse Hole story text goes here
+      makeBox("Mouse Hole");
+      System.out.println();
+      
+      System.out.print("You approach the little hole with the whiskers. You try to be quiet so you ");
+      System.out.println("don't scare off the mouse.\n");
+      
+      System.out.println("\"Hello?\" You whisper gently.\n");
+      
+      System.out.println("A litle fuzzy head pops out of the hole."); 
+      System.out.println("\"Oh, hello!\" It says. \"Could you help me with something?\"\n");
+      
+      System.out.println("\"Of course, what do you need?\"\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      System.out.print("The mouse seems flustered. \"It's just that I can't seem to get down ");
+      System.out.print("into my hole. I think something is stuck inside and I can't get past it. ");
+      System.out.println("Can you reach in here and see what's blocking me?\"\n");
+      
+      System.out.print("\"Yes, I'd be happy to,\" you say. You reach your hand inside the hole ");
+      System.out.println("- luckily it's just large enough for you to fit - and feel around.\n");
+      
+      System.out.print("Your fingers close around a rough, ball-shaped object. You tug a bit and ");
+      System.out.println("are able to pull it out.\n");
+      
+      System.out.println("It looks like a big ball of different sorts of string.\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      System.out.print("\"Oh, thank you so much!\" The mouse says. It runs down into the hole for ");
+      System.out.println("a moment, then pops back out. ");
+      System.out.print("\"That did it! I'm able to get home now. You can keep that if you like, ");
+      System.out.println("whatever it is!\"\n");
+      
+      System.out.println("You put the string in your bag.\n");
+      
+      hasString = true;
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up for Spider or Bunny goes here
+         System.out.println("Looking around, you notice a spider busily crafting a web in a nearby tree.\n");
+         
+         System.out.println("You also see a bunny hopping around with something in its mouth.\n");
+         
+         System.out.println("Would you like to visit the Spider or follow the Bunny?");
+         System.out.flush();
+         choice = scnr.nextLine();
+         System.out.println();
+         choice = makeChoice("spider", "bunny", choice);
+      }
+      
+      return choice;
+   }
+   
+   // Bunny: Help a lost bunny in exchange for a Carrot
+   // Option to visit Path or Big Tree
+   public static String helpBunny() {
+      String choice = "";
+      
+      // Bunny story text goes here
+      makeBox("Bunny");
+      System.out.println();
+      
+      System.out.println("You run to catch up with the bunny. You notice it has a carrot in its mouth.\n");
+      
+      System.out.println("\"Hey!\" you call to it. It stops, ears perked up, and turns to you.");
+      
+      System.out.println("It drops the carrot. \"Oh hi!\" It says. \"Listen, do you mind taking this carrot?\"\n");
+      
+      System.out.println("\"What?\" You ask, surprised. \"Don't you want to eat it?\"\n"); 
+      
+      System.out.print("\"Well, not really. It's actually a myth that bunnies like carrots. If I'm ");
+      System.out.println("being honest, they make me pretty gassy. But people keep giving them to me!\"\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      System.out.println("\"Are you sure you don't want it?\"\n");
+      
+      System.out.print("\"Nah, there's some other yummy stuff in a garden around here. I think I'd ");
+      System.out.println("rather check that out!\"\n"); 
+      
+      System.out.print("\"Well, ok! Thanks!\" You pick up the carrot and put it in your bag as the bunny ");
+      System.out.println("hops off.\n");
+      
+      hasCarrot = true;
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up for Path or Big Tree goes here
+         System.out.println("As you're walking away, you notice a well-worn path leading further into the woods.\n");
+         
+         System.out.print("You also see you're not too far off from your favorite big tree in ");
+         System.out.println("the woods.\n");
+         
+         System.out.println("Do you walk down the Path or visit the Big Tree?");
+         System.out.flush();
+         choice = scnr.nextLine();
+         System.out.println();
+         choice = makeChoice("path", "big tree", choice);
+      }
+      
+      return choice;
+   }
+   
+   // Garden: You may choose to pick an Onion or gather an Acorn
+   // Option to visit Big Tree or Spider
+   public static String visitGarden() {
+      String choice = "";
+      String inventoryChoice = "";
+      
+      // Garden story text goes here
+      makeBox("The Garden");
+      System.out.println();
+      
+      System.out.print("The garden sits in a small clearing. While small, it also appears well-loved. ");
+      System.out.print("Despite the quiet calm of your surroundings, there must be at least one, ");
+      System.out.println("if not more, dedicated guardians who tend to it regularly.\n"); 
+      
+      System.out.print("There are several rows of vegetables in different stages of growth. You feel ");
+      System.out.print("like it wouldn't be right to take anything from here without first helping in ");
+      System.out.println("the garden.\n");
+      
+      System.out.print("You see a few weeds growing, so you take a moment to pull them. You also pick ");
+      System.out.print("up the nearby watering can and sprinkle some of the plants that appear to need ");
+      System.out.println("water the most.\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      System.out.print("When you're done, you look around at what might be ready to eat. You see long, ");
+      System.out.println("green shoots attached to the tops of some onion bulbs peeking just above the soil.\n"); 
+      
+      System.out.print("But next to the onions, you also notice the largest acorn you've ever seen ");
+      System.out.println("lying next to the plants. It must be the size of a golf ball!\n");
+      
+      // Choose to add Onion or Acorn to inventory
+      System.out.println("Do you take the Onion or Acorn?");
+      System.out.flush();
+      inventoryChoice = scnr.nextLine();
+      System.out.println();
+      
+      // Choose onion or acorn
+      inventoryChoice = makeChoice("onion", "acorn", inventoryChoice);
+      
+      if ((inventoryChoice.equals("onion")) == true) {
+         System.out.print("You yank on an onion until it pops out of the ground. You brush the excess dirt ");
+         System.out.println("off and put it in your bag.\n");
+         hasOnion = true;
+      } else {
+         System.out.println("The acorn is too cool to not grab. You pick it up and add it to your bag.\n");
+         hasAcorn = true;
+      }
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up for Big Tree or Spider goes here
+         System.out.print("You look around and notice you're not too far off from your favorite big tree in ");
+         System.out.println("the woods.\n");
+         
+         System.out.println("There's also a spider working hard on its web in the branches of a nearby tree.\n");
+         
+         System.out.println("Do you visit the Big Tree or the Spider?");
+         System.out.flush();
+         choice = scnr.nextLine();
+         System.out.println();
+         choice = makeChoice("big tree", "spider", choice);
+      }
+      
+      return choice;
+   }
+
+   
+   // Bees: Get some Honey from the bees
+   // Option to visit Garden or Stream
+   public static String lookAtBeeHive() {
+      String choice = "";
+      
+      // Bees story text goes here
+      makeBox("Bee Hive");
+      System.out.println();
+      
+      System.out.print("The bees are buzzing around their hive enthusiastically! You don't want ");
+      System.out.print("to get too close, since you don't know your way around bees that well. ");
+      System.out.println("You don't want to get stung, or accidentally hurt a bee.\n");
+      
+      System.out.print("However, you notice on the far side of the bee hive, there's some honey ");
+      System.out.print("dripping out! Some fresh honey sounds amazing right now. You wonder ");
+      System.out.println("if you should try to catch some?\n");
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      System.out.print("Looking around in your bag, you happen to have a few plastic sandwich bags ");
+      System.out.print("you keep on hand in case you need them. You grab one and hope it will work ");
+      System.out.println("for catching honey!\n");
+      
+      System.out.print("Very carefully, you make your way to the side of the hive. There aren't too ");
+      System.out.print("many bees on this side, and you're able to catch a few tablespoons of honey ");
+      System.out.println("into your sandwich bag.\n");
+      
+      System.out.println("You carefully hurry away, listening to the bees droning away as you leave.\n");
+      
+      hasHoney = true;
+      
+      System.out.println("**(Type anything and hit enter to continue)**");
+      System.out.flush();
+      temp = scnr.nextLine();
+      System.out.println();
+      
+      printInventory();
+      System.out.println();
+      
+      if (totalChoices == 6) {
+         choice = "end";
+      } else {
+         // Set up for Garden or Stream goes here
+         System.out.print("As you're leaving, you notice a small garden in the distance. It looks like it's ");
+         System.out.println("tended to occasionally by whoever happens upon it.\n");
+         
+         System.out.println("You also see the calm stream, bubbling softly, inviting you to rest a moment.\n");
+         
+         System.out.println("Would you like to tend to the Garden or visit the Stream?");
+         System.out.flush();
+         choice = scnr.nextLine();
+         System.out.println();
+         choice = makeChoice("garden", "stream", choice);
+      }
+      
+      return choice;
+   }
+   
+}
